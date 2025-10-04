@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能评分系统 - 保护城市生态系统方案</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .score-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .dimension-scores {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .dimension {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .dimension h3 {
+            margin-bottom: 15px;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+        
+        .dimension-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .feedback {
+            background: #f0f7f0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .feedback h3 {
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+        
+        .keywords-detected {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .keywords-detected h3 {
+            margin-bottom: 10px;
+            color: #4CAF50;
+            font-size: 16px;
+        }
+        
+        .keyword-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .keyword {
+            background: #e8f5e9;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .negative-keyword {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .dimension-scores {
+                flex-direction: column;
+            }
+            
+            .dimension {
+                min-width: 100%;
+            }
+        }
+        
+        .example-text {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .example-text a {
+            color: #4CAF50;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .example-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI智能评分系统</h1>
+            <p class="subtitle">保护城市生态系统方案评估</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2>提交您的方案</h2>
+                <p>请在下方文本框中输入您的保护城市生态系统方案：</p>
+                <textarea id="proposalInput" placeholder="请输入您的方案内容..."></textarea>
+                <p class="example-text">需要示例？<a id="exampleLink" href="#">点击这里查看示例方案</a></p>
+                <button id="scoreButton" class="btn">
+                    <i>✓</i> 立即评分
+                </button>
+            </div>
+            
+            <div id="resultSection" class="result-section">
+                <div class="score-display">
+                    <div class="score-circle" id="totalScore">0</div>
+                    <h2>总体评分</h2>
+                </div>
+                
+                <div class="dimension-scores">
+                    <div class="dimension">
+                        <h3>针对性 (40%)</h3>
+                        <div class="dimension-score" id="targetedScore">0</div>
+                    </div>
+                    <div class="dimension">
+                        <h3>可行性 (40%)</h3>
+                        <div class="dimension-score" id="feasibilityScore">0</div>
+                    </div>
+                    <div class="dimension">
+                        <h3>创新性 (20%)</h3>
+                        <div class="dimension-score" id="innovationScore">0</div>
+                    </div>
+                </div>
+                
+                <div class="feedback">
+                    <h3>AI评语</h3>
+                    <p id="feedbackText">这里将显示AI生成的个性化评语...</p>
+                </div>
+                
+                <div class="keywords-detected">
+                    <h3>检测到的关键词</h3>
+                    <div class="keyword-list" id="keywordsList">
+                        <!-- 关键词将动态添加到这里 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>AI智能评分系统 &copy; 2023 | 基于大语言模型的智能评估技术</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scoreButton = document.getElementById('scoreButton');
+            const proposalInput = document.getElementById('proposalInput');
+            const resultSection = document.getElementById('resultSection');
+            const totalScoreElement = document.getElementById('totalScore');
+            const targetedScoreElement = document.getElementById('targetedScore');
+            const feasibilityScoreElement = document.getElementById('feasibilityScore');
+            const innovationScoreElement = document.getElementById('innovationScore');
+            const feedbackText = document.getElementById('feedbackText');
+            const keywordsList = document.getElementById('keywordsList');
+            const exampleLink = document.getElementById('exampleLink');
+            
+            // 评分维度和关键词定义
+            const dimensions = {
+                targeted: {
+                    name: "针对性",
+                    weight: 0.4,
+                    positiveKeywords: ["水质污染", "垃圾清理", "生物栖息地", "外来物种", "空气污染", "噪音污染", "绿地减少", "河流治理", "生态平衡", "物种保护"],
+                    negativeKeywords: ["空洞", "泛泛而谈", "不具体", "模糊", "缺乏重点"]
+                },
+                feasibility: {
+                    name: "可行性",
+                    weight: 0.4,
+                    positiveKeywords: ["宣传海报", "垃圾分类", "志愿者活动", "节约用水", "植树造林", "社区参与", "学校教育", "公共交通", "环保袋", "回收利用"],
+                    negativeKeywords: ["难以实现", "需要巨资", "不切实际", "成本高昂", "技术难度大"]
+                },
+                innovation: {
+                    name: "创新性",
+                    weight: 0.2,
+                    positiveKeywords: ["AI监测", "小程序", "创意海报", "生态浮岛", "智能垃圾桶", "太阳能", "物联网", "大数据", "无人机", "虚拟现实"]
+                }
+            };
+            
+            // 示例方案
+            const exampleProposal = `我们的方案是针对城市水质污染问题提出的。首先，我们计划在学校和社区开展宣传活动，制作创意海报，提高大家对水污染的认识。其次，我们将组织志愿者活动，定期清理河流垃圾，并在河边设置生态浮岛来改善水质。同时，我们建议开发一个小程序，让市民可以报告污染问题，并利用AI监测技术分析水质数据。这些措施都是学生可以参与的，既实际又有效。`;
+            
+            // 点击示例链接
+            exampleLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                proposalInput.value = exampleProposal;
+            });
+            
+            // 评分按钮点击事件
+            scoreButton.addEventListener('click', function() {
+                const proposalText = proposalInput.value.trim();
+                
+                if (proposalText === '') {
+                    alert('请输入方案内容后再进行评分！');
+                    return;
+                }
+                
+                // 模拟AI处理时间
+                scoreButton.disabled = true;
+                scoreButton.innerHTML = '<i>⏳</i> 分析中...';
+                
+                setTimeout(function() {
+                    // 分析文本并计算分数
+                    const scores = calculateScores(proposalText);
+                    const totalScore = Math.round(
+                        scores.targeted * dimensions.targeted.weight + 
+                        scores.feasibility * dimensions.feasibility.weight + 
+                        scores.innovation * dimensions.innovation.weight
+                    );
+                    
+                    // 更新UI显示分数
+                    totalScoreElement.textContent = totalScore;
+                    targetedScoreElement.textContent = scores.targeted;
+                    feasibilityScoreElement.textContent = scores.feasibility;
+                    innovationScoreElement.textContent = scores.innovation;
+                    
+                    // 生成评语
+                    const feedback = generateFeedback(proposalText, scores, totalScore);
+                    feedbackText.textContent = feedback;
+                    
+                    // 显示检测到的关键词
+                    displayDetectedKeywords(proposalText);
+                    
+                    // 显示结果区域
+                    resultSection.style.display = 'block';
+                    
+                    // 恢复按钮状态
+                    scoreButton.disabled = false;
+                    scoreButton.innerHTML = '<i>✓</i> 立即评分';
+                    
+                    // 平滑滚动到结果区域
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                }, 1500); // 模拟1.5秒的处理时间
+            });
+            
+            function calculateScores(text) {
+                const scores = {
+                    targeted: calculateDimensionScore(text, dimensions.targeted),
+                    feasibility: calculateDimensionScore(text, dimensions.feasibility),
+                    innovation: calculateDimensionScore(text, dimensions.innovation)
+                };
+                
+                return scores;
+            }
+            
+            function calculateDimensionScore(text, dimension) {
+                let score = 0;
+                
+                // 计算正向关键词得分
+                dimension.positiveKeywords.forEach(keyword => {
+                    if (text.includes(keyword)) {
+                        score += 10; // 每个正向关键词加10分
+                    }
+                });
+                
+                // 计算负向关键词扣分（如果有）
+                if (dimension.negativeKeywords) {
+                    dimension.negativeKeywords.forEach(keyword => {
+                        if (text.includes(keyword)) {
+                            score -= 15; // 每个负向关键词扣15分
+                        }
+                    });
+                }
+                
+                // 确保分数在0-100之间
+                return Math.max(0, Math.min(100, score));
+            }
+            
+            function generateFeedback(text, scores, totalScore) {
+                let feedback = "";
+                
+                // 根据总分给出总体评价
+                if (totalScore >= 90) {
+                    feedback += "您的方案非常出色！";
+                } else if (totalScore >= 70) {
+                    feedback += "您的方案表现良好！";
+                } else if (totalScore >= 60) {
+                    feedback += "您的方案基本合格，但还有提升空间。";
+                } else {
+                    feedback += "您的方案需要进一步改进。";
+                }
+                
+                feedback += " ";
+                
+                // 针对性评价
+                if (scores.targeted >= 80) {
+                    feedback += "方案针对性强，准确抓住了城市生态系统的关键问题。";
+                } else if (scores.targeted >= 60) {
+                    feedback += "方案有一定针对性，但可以更具体地指出问题所在。";
+                } else {
+                    feedback += "方案针对性不足，建议更明确地指出具体生态问题。";
+                }
+                
+                feedback += " ";
+                
+                // 可行性评价
+                if (scores.feasibility >= 80) {
+                    feedback += "方案可行性高，提出的措施贴近学生实际，易于实施。";
+                } else if (scores.feasibility >= 60) {
+                    feedback += "方案有一定可行性，但部分措施实施难度较大。";
+                } else {
+                    feedback += "方案可行性有待提高，建议考虑更实际可行的措施。";
+                }
+                
+                feedback += " ";
+                
+                // 创新性评价
+                if (scores.innovation >= 80) {
+                    feedback += "方案创新性突出，引入了新颖的思路和技术。";
+                } else if (scores.innovation >= 60) {
+                    feedback += "方案有一定创新性，但可以尝试加入更多创新元素。";
+                } else {
+                    feedback += "方案创新性不足，建议思考更独特的解决方案。";
+                }
+                
+                // 具体建议
+                feedback += " 建议：";
+                
+                if (scores.targeted < 70) {
+                    feedback += "多关注具体生态问题，如'水质污染'、'生物栖息地'等；";
+                }
+                
+                if (scores.feasibility < 70) {
+                    feedback += "增加贴近学生生活的措施，如'宣传海报'、'志愿者活动'等；";
+                }
+                
+                if (scores.innovation < 70) {
+                    feedback += "尝试引入新技术或创意方法，如'AI监测'、'小程序'等。";
+                }
+                
+                return feedback;
+            }
+            
+            function displayDetectedKeywords(text) {
+                keywordsList.innerHTML = '';
+                
+                // 收集所有检测到的关键词
+                const detectedKeywords = [];
+                
+                // 检查每个维度的关键词
+                for (const dimensionKey in dimensions) {
+                    const dimension = dimensions[dimensionKey];
+                    
+                    // 检查正向关键词
+                    dimension.positiveKeywords.forEach(keyword => {
+                        if (text.includes(keyword)) {
+                            detectedKeywords.push({
+                                text: keyword,
+                                type: 'positive'
+                            });
+                        }
+                    });
+                    
+                    // 检查负向关键词（如果有）
+                    if (dimension.negativeKeywords) {
+                        dimension.negativeKeywords.forEach(keyword => {
+                            if (text.includes(keyword)) {
+                                detectedKeywords.push({
+                                    text: keyword,
+                                    type: 'negative'
+                                });
+                            }
+                        });
+                    }
+                }
+                
+                // 显示关键词
+                if (detectedKeywords.length > 0) {
+                    detectedKeywords.forEach(keyword => {
+                        const keywordElement = document.createElement('span');
+                        keywordElement.className = `keyword ${keyword.type === 'negative' ? 'negative-keyword' : ''}`;
+                        keywordElement.textContent = keyword.text;
+                        keywordsList.appendChild(keywordElement);
+                    });
+                } else {
+                    const noKeywordsElement = document.createElement('span');
+                    noKeywordsElement.textContent = '未检测到关键词';
+                    noKeywordsElement.style.color = '#999';
+                    keywordsList.appendChild(noKeywordsElement);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
